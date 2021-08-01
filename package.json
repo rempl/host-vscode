@@ -29,6 +29,18 @@
         "command": "rempl-host-vscode.connectCustom",
         "title": "Connect to Custom Rempl Server"
       }
+    ],
+    "configuration": [
+      {
+        "title": "Rempl",
+        "properties": {
+          "rempl-host-vscode.connect.defaultServer": {
+            "type": "string",
+            "default": "http://localhost:8177/",
+            "description": "Default Rempl Server to connect with"
+          }
+        }
+      }
     ]
   },
   "scripts": {

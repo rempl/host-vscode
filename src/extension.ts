@@ -1,9 +1,7 @@
 import * as http from "http";
 import * as vscode from "vscode";
 
-const defaultURL = "http://localhost:8177/";
-
-function makeViewer(url: string = defaultURL) {
+function makeViewer(url: string) {
   const panel = vscode.window.createWebviewPanel(
     "remplViewer",
     "Rempl Viewer",
@@ -15,9 +13,17 @@ function makeViewer(url: string = defaultURL) {
 }
 
 export function activate(context: vscode.ExtensionContext) {
+  let config = vscode.workspace.getConfiguration("rempl-host-vscode");
+
+  vscode.workspace.onDidChangeConfiguration((e) => {
+    if (e.affectsConfiguration("rempl-host-vscode.connect.defaultServer")) {
+      config = vscode.workspace.getConfiguration("rempl-host-vscode");
+    }
+  });
+
   context.subscriptions.push(
     vscode.commands.registerCommand("rempl-host-vscode.connect", () => {
-      makeViewer();
+      makeViewer(config.get<string>("connect.defaultServer")!);
     })
   );
   context.subscriptions.push(
@@ -25,7 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
       const url = vscode.window.showInputBox({
         title: "Rempl Connection Config",
         prompt: "Server URL",
-        value: "http://",
+        value: config.get<string>("connect.defaultServer")!,
       });
       url.then((url) => {
         if (url) {
